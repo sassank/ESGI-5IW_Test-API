@@ -1,19 +1,19 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize('sqlite::memory:');
+import sequelize from './connection';
 
 const User = sequelize.define('User', {
   // Model attributes are defined here
-  firstName: {
+  email: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  lastName: {
-    type: DataTypes.STRING
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false
     // allowNull defaults to true
   }
 }, {
   // Other model options go here
 });
 
-// `sequelize.define` also returns the model
-console.log(User === sequelize.models.User); // true
+export default User;

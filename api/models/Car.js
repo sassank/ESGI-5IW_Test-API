@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize('sqlite::memory:');
+import sequelize from './connection';
 
 const Car = sequelize.define('Car', {
   // Model attributes are defined here
