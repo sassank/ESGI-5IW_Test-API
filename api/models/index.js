@@ -1,5 +1,10 @@
 const sequelize = require('./connection');
-require('./User');
-require('./Car');
-require('./Transaction');
 
+const User = require('./User');
+const Car = require('./Car');
+const Transaction = require('./Transaction');
+
+Car.hasOne(User);
+
+User.hasMany(Car);
+Car.belongsTo(User);
