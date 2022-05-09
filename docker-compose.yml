@@ -1,0 +1,31 @@
+version: "3.4"
+
+services:
+  # Database for api
+  postgres:
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_DB=api
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      # you may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      - db_data:/var/lib/postgresql/data:rw
+    ports:
+      - target: 5432
+        published: 5432
+        protocol: tcp
+
+  # Node client
+  api:
+    build: .
+    volumes:
+      - "./api:/home/node/app"
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    depends_on:
+      - postgres
+volumes:
+  db_data: {}
