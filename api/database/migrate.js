@@ -1,5 +1,5 @@
 const sequelize = require('./connection');
-require('./index');
+require('./init_database');
 
 console.log("The database will be created and data erased.");
 sequelize.sync();

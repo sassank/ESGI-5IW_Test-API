@@ -1,6 +1,11 @@
 // Init database models
-require('../index');
+require('../init_database');
+const sequelize = require('../connexion');
 const User = require('../models/User');
+
+afterEach(() => {
+    sequelize.close();
+});
 
 it('should create a new user', async () => {
     // Create a new user
@@ -8,7 +13,6 @@ it('should create a new user', async () => {
         email: "mail@dev.com",
         password: "password"
     });
-    console.log(myUser);
 
     try {
         expect(myUser).toBeDefined();
