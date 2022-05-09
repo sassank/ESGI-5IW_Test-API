@@ -1,5 +1,3 @@
-const sequelize = require('./connection');
-
 const User = require('./models/User');
 const Car = require('./models/Car');
 const Transaction = require('./models/Transaction');
