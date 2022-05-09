@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
-import sequelize from './connection';
+const sequelize = require('./connection');
 
 const Transaction = sequelize.define('Transaction', {
   // Model attributes are defined here
@@ -15,4 +15,4 @@ const Transaction = sequelize.define('Transaction', {
   // Other model options go here
 });
 
-export default Transaction;
+module.exports = Transaction;

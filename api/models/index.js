@@ -1,8 +1,5 @@
-import sequelize from './connection';
-import Car from './Car';
-import User from './User';
-import Transaction from './Transaction';
+const sequelize = require('./connection');
+require('./User');
+require('./Car');
+require('./Transaction');
 
-export {
-    User, Car, Transaction
-};
