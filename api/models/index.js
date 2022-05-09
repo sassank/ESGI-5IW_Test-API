@@ -4,7 +4,6 @@ const User = require('./User');
 const Car = require('./Car');
 const Transaction = require('./Transaction');
 
-Car.hasOne(User);
-
+// Define that Car has one User and User has many Cars
 User.hasMany(Car);
 Car.belongsTo(User);
