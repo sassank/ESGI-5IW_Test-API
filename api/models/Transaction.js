@@ -15,5 +15,4 @@ const Transaction = sequelize.define('Transaction', {
   // Other model options go here
 });
 
-// `sequelize.define` also returns the model
-console.log(Transaction === sequelize.models.Transaction); // true
+export default Transaction;

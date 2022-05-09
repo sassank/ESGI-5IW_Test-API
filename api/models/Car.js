@@ -15,5 +15,4 @@ const Car = sequelize.define('Car', {
   // Other model options go here
 });
 
-// `sequelize.define` also returns the model
-console.log(Car === sequelize.models.Car); // true
+export default Car;
