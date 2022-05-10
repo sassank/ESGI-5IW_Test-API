@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "serve": "nodemon server.js",
-    "db:fresh": "node database/migrate.js"
+    "db:fresh": "node database/migrate.js",
+    "cucumber": "cucumber-js --publish-quiet"
   },
   "author": "",
   "license": "MIT",
@@ -18,6 +19,7 @@
     "sequelize": "^6.19.0"
   },
   "devDependencies": {
+    "@cucumber/cucumber": "^8.2.0",
     "jest": "^28.1.0",
     "nodemon": "^2.0.16",
     "supertest": "^6.2.3"

@@ -27,7 +27,7 @@ describe('User routes', () => {
         // Expect content is array
         expect(Array.isArray(response.body)).toBeTruthy();
         // Expect content is empty
-        expect(response.body.length).toBe(users.length);
+        expect(response.body).toHaveLength(users.length);
     });
 
     it('should get one user', async () => {
