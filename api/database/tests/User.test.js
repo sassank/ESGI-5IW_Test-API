@@ -3,7 +3,7 @@ require('../init_database');
 const sequelize = require('../connexion');
 const User = require('../models/User');
 
-afterEach(() => {
+afterAll(() => {
     sequelize.close();
 });
 
