@@ -24,6 +24,18 @@ router.post("/", (req, res) => {
     );
 });
 
+// Set get route
+router.get("/:id", (req, res) => {
+    User.findByPk(req.params.id).then(user => {
+        res.json(user).status(200); // 200 = OK
+    }
+    ).catch(err => {
+        res.json(err).status(500); // 500 = Internal Server Error
+    }
+    );
+});
+
+
 // Set put route
 router.put("/:id", (req, res) => {
     Transaction.update(req.body, {
