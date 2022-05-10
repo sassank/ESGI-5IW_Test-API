@@ -6,13 +6,19 @@ const request = supertest(app);
 const User = require('../database/models/User');
 const UserGenerator = require('../database/seeders/userSeeder');
 
-afterAll(() => {
-    sequelize.close();
-});
-
 describe('User routes', () => {
-    it('Get all users', async () => {
-        const users = await UserGenerator.generateUsers(5);
+    afterAll(() => {
+        // Close the connexion
+        sequelize.close();
+    });
+
+    beforeEach(async () => {
+        // Truncate
+        await User.destroy({ where: {}, force: true });
+    });
+
+    it('should get all users', async () => {
+        const users = await UserGenerator.generateUsers(1);
         const response = await request.get('/users').send();
 
         expect(response.status).toBe(200);
@@ -22,13 +28,9 @@ describe('User routes', () => {
         expect(Array.isArray(response.body)).toBeTruthy();
         // Expect content is empty
         expect(response.body.length).toBe(users.length);
-
-        users.forEach(user => {
-            user.destroy();
-        });
     });
 
-    it('Get one user', async () => {
+    it('should get one user', async () => {
         const user = await UserGenerator.generateUser();
         const userData = user.dataValues;
 
@@ -41,19 +43,66 @@ describe('User routes', () => {
         expect(typeof response.body).toBe('object');
         // Expect content
         expect(response.body.id).toBe(userData.id);
-        user.destroy();
     });
 
-    it('Add one user', async () => {
-        const response = await request.post('/users').send();
+    it('should not get any user', async () => {
+        const user = await UserGenerator.generateUser();
+        const userData = user.dataValues;
 
-        expect(response.status).toBe(201);
+        const response = await request.get('/users/0').send();
+
+        expect(response.status).toBe(404);
         // Expect content type
         expect(response.type).toBe('application/json');
-        // Expect content is object
-        console.log(response.body)
-        // expect(typeof response.body).toBe('object');
-        
-        // response.body.destroy();
+    });
+
+    it('should add one user', async () => {
+        const response = await request.post('/users')
+            .send({
+                email: 'mail@dev.com',
+                password: 'password'
+            });
+
+        expect(response.status).toBe(201); // 201 = Created
+        expect(response.type).toBe('application/json'); // Expect content type
+        expect(typeof response.body).toBe('object'); // Expect content is object
+    });
+
+    it('should update one user', async () => {
+        const user = await UserGenerator.generateUser('mail1@dev.com');
+        const response = await request.put('/users/' + user.dataValues.id)
+            .send({
+                email: 'mail2@dev.com',
+                password: 'password'
+            });
+
+        expect(response.status).toBe(200); // 200 = OK
+        expect(response.type).toBe('application/json'); // Expect content type
+        expect(typeof response.body).toBe('object'); // Expect content is object
+        expect(response.body.email).toBe('mail2@dev.com'); // Expect content is object
+    });
+
+    it('should not find any user to update', async () => {
+        const user = await UserGenerator.generateUser('mail1@dev.com');
+        const response = await request.put('/users/0')
+            .send({
+                email: 'mail2@dev.com',
+                password: 'password'
+            });
+
+        expect(response.status).toBe(404); // 200 = OK
+        expect(response.type).toBe('application/json'); // Expect content type
+        expect(typeof response.body).toBe('object')
+    });
+
+    it('should delete one user', async () => {
+        const user = await UserGenerator.generateUser();
+        const response = await request.delete('/users/' + user.dataValues.id)
+            .send({
+                email: 'mail2@dev.com',
+                password: 'password'
+            });
+
+        expect(response.status).toBe(204); // 200 = OK
     });
 });
