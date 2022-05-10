@@ -95,6 +95,19 @@ Then("I should receive an object", function () {
     expect(this.response.body).toBeInstanceOf(Object);
 });
 
+Then("I should receive an object with payload", function (dataTable) {
+    expect(this.response.body).toBeInstanceOf(Object);
+    // Check the keys
+    expect(this.response.body).toEqual(expect.objectContaining(dataTable.rowsHash()));
+    // Check the results
+    for (const key in dataTable.rowsHash()) {
+        if (Object.hasOwnProperty.call(dataTable.rowsHash(), key)) {
+            const row = dataTable.rowsHash()[key];
+            expect(this.response.body[key]).toBe(row);
+        }
+    }
+});
+
 Then("I should receive a list of items", function () {
     expect(Array.isArray(this.response.body)).toBeTruthy();
 });

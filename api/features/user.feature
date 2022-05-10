@@ -30,6 +30,10 @@ Feature: Check the user
             | password | password     |
         When I send a "POST" request to "users" with payload
         Then I should receive a 201 response
+        And I should receive an object with payload
+            | email | mail@dev.com |
+            | password | password |
+
 
     Scenario: We check that we can update a user
         Given I create one user
@@ -38,6 +42,9 @@ Feature: Check the user
             | password | password     |
         When I send a "PUT" request to "users" with payload for the created user
         Then I should receive a 200 response
+        And I should receive an object with payload
+            | email | mail@dev.com |
+            | password | password |
 
     Scenario: We check that we can get existant user
         Given I create one user
