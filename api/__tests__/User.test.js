@@ -14,7 +14,7 @@ describe('User routes', () => {
     it('Get all users', async () => {
         const users = await UserGenerator.generateUsers(5);
         const response = await request.get('/users').send();
-        
+
         expect(response.status).toBe(200);
         // Expect content type
         expect(response.type).toBe('application/json');
@@ -28,7 +28,7 @@ describe('User routes', () => {
         });
     });
 
-    it('Get one users', async () => {
+    it('Get one user', async () => {
         const user = await UserGenerator.generateUser();
         const userData = user.dataValues;
 
@@ -42,5 +42,18 @@ describe('User routes', () => {
         // Expect content
         expect(response.body.id).toBe(userData.id);
         user.destroy();
+    });
+
+    it('Add one user', async () => {
+        const response = await request.post('/users').send();
+
+        expect(response.status).toBe(201);
+        // Expect content type
+        expect(response.type).toBe('application/json');
+        // Expect content is object
+        console.log(response.body)
+        // expect(typeof response.body).toBe('object');
+        
+        // response.body.destroy();
     });
 });

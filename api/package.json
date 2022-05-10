@@ -4,7 +4,7 @@
   "description": "Projet api",
   "main": "index.js",
   "scripts": {
-    "test": "jest --detectOpenHandles",
+    "test": "jest",
     "serve": "nodemon server.js",
     "db:fresh": "node database/migrate.js"
   },
