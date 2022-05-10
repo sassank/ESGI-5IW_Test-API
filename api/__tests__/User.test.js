@@ -98,10 +98,7 @@ describe('User routes', () => {
     it('should delete one user', async () => {
         const user = await UserGenerator.generateUser();
         const response = await request.delete('/users/' + user.dataValues.id)
-            .send({
-                email: 'mail2@dev.com',
-                password: 'password'
-            });
+            .send();
 
         expect(response.status).toBe(204); // 200 = OK
     });
