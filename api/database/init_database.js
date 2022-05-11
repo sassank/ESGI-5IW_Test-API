@@ -1,7 +1,9 @@
 const User = require('./models/User');
 require('./factories/UserFactory');
 const Car = require('./models/Car');
+require('./factories/CarFactory');
 const Transaction = require('./models/Transaction');
+require('./factories/TransactionFactory');
 const sequelize = require('./connexion');
 
 // Define that Car has one User and User has many Cars

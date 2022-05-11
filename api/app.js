@@ -11,9 +11,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 app.use("/users", require('./routes/user'));
-
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-})
+app.use("/transactions", require('./routes/transaction'));
 
 module.exports = app;
