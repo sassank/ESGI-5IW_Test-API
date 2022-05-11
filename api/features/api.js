@@ -1,4 +1,4 @@
-const { Given, When, Then, BeforeStep, AfterStep, AfterAll } = require("@cucumber/cucumber");
+const { Given, When, Then, Before, After, AfterAll } = require("@cucumber/cucumber");
 const supertest = require('supertest');
 const app = require('../app');
 const sequelize = require('../database/connexion');
@@ -7,6 +7,8 @@ const User = require('../database/models/User');
 const Car = require('../database/models/Car');
 const Transaction = require('../database/models/Transaction');
 const client = supertest(app);
+
+// Create a function to interpolate content
 
 /**
  * Check a http method
@@ -22,6 +24,19 @@ const checkMethodIsValid = function (method) {
     }
 };
 
+function interpolateByType(handle) {
+    let type = "";
+    handle = handle.replace(/\:\:(.*)/g, (match, key) => {
+        type = key;
+        return "";
+    });
+    if (type === "int") {
+        return parseInt(handle);
+    }
+    return handle;
+}
+
+
 /**
  * Sanitize the path (ltrim / from path)
  * @param {String} path The path to check
@@ -31,17 +46,17 @@ const sanitizePath = function (path) {
     return "/" + path.replace(/^\/+/, "");
 };
 
-// BeforeStep(async () => {
-//     // Clean the database
-//     // await User.destroy({ where: {}, force: true });
-//     // Listen for any sql request
-//     await sequelize.ezTransaction.listen();
-// })
+Before(async () => {
+    // Clean the database
+    // await User.destroy({ where: {}, force: true });
+    // Listen for any sql request
+    await sequelize.ezTransaction.listen();
+})
 
-// AfterStep(async () => {
-//     // Rollback the transaction
-//     await sequelize.ezTransaction.rollback();
-// })
+After(async () => {
+    // Rollback the transaction
+    await sequelize.ezTransaction.rollback();
+})
 
 AfterAll(async () => {
     // Close the connexion
@@ -49,7 +64,13 @@ AfterAll(async () => {
 });
 
 Given("I have payload", function (dataTable) {
-    this.payload = dataTable.rowsHash();
+    let payload = dataTable.rowsHash();
+    for (const key in payload) {
+        if (Object.hasOwnProperty.call(payload, key)) {
+            payload[key] = interpolateByType(payload[key]);
+        }
+    }
+    this.payload = payload;
 });
 
 Given("I have no {string}", async function (entity) {
@@ -155,21 +176,25 @@ Then("I should receive an object", function () {
 });
 
 Then("I should receive an object with payload", function (dataTable) {
-    console.log(dataTable, dataTable.rowsHash());
+    // const data = dataTable.rowsHash();
+
+
     expect(this.response.body).toBeInstanceOf(Object);
     // Check the keys and result
-    expect(this.response.body).toEqual(expect.objectContaining(dataTable.rowsHash()));
+    // expect(this.response.body).toEqual(expect.objectContaining(dataTable.rowsHash()));
     // Check the results
-    // for (const key in dataTable.rowsHash()) {
-    //     if (Object.hasOwnProperty.call(dataTable.rowsHash(), key)) {
-    //         const row = dataTable.rowsHash()[key];
-    //         expect(this.response.body[key]).toBe(row);
-    //     }
-    // }
+    for (const key in dataTable.rowsHash()) {
+        if (Object.hasOwnProperty.call(dataTable.rowsHash(), key)) {
+            let row = dataTable.rowsHash()[key];
+            row = interpolateByType(row);
+            expect(this.response.body[key]).toBe(row);
+        }
+    }
 });
 
 Then("I should receive a list of items", function () {
     expect(Array.isArray(this.response.body)).toBeTruthy();
+
 });
 
 Then("I should receive an empty list", function () {

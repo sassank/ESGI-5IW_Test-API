@@ -8,7 +8,7 @@ Transaction.factory = {
     addMany: async (count = 5) => {
         let cars = [];
         for (let i = 0; i < count; i++) {
-            cars.push(await Car.create(defaultValues));
+            cars.push(await Transaction.create(defaultValues));
         }
         return cars;
     },
@@ -17,6 +17,6 @@ Transaction.factory = {
         if (price !== null) {
             defaults.price = price;
         }
-        return await Car.create(defaults);
+        return await Transaction.create(defaults);
     }
 };

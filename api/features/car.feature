@@ -28,13 +28,13 @@ Feature: Check the cars
         Given I have payload
             | brand | wolskwagen |
             | color | red        |
-            | year  | 2016       |
+            | year  | 2016::int  |
         When I send a "POST" request to "cars" with payload
         Then I should receive a 201 response
         And I should receive an object with payload
             | brand | wolskwagen |
             | color | red        |
-            | year  | 2016       |
+            | year  | 2016::int  |
 
 
     Scenario: We check that we can update a car
@@ -42,13 +42,13 @@ Feature: Check the cars
         Given I have payload
             | brand | wolskwagen |
             | color | red        |
-            | year  | 2016       |
+            | year  | 2016::int  |
         When I send a "PUT" request to "cars" with payload for the created "car"
         Then I should receive a 200 response
         And I should receive an object with payload
             | brand | wolskwagen |
             | color | red        |
-            | year  | 2016       |
+            | year  | 2016::int  |
 
     Scenario: We check that we can get existant car
         Given I create one "car"
