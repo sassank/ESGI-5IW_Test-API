@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "fixtures": "^0.0.2",
+    "sequelize-fixtures": "^1.2.0"
+  }
+}
