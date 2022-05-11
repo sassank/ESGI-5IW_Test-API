@@ -4,21 +4,27 @@ const supertest = require('supertest');
 const app = require('../app');
 const request = supertest(app);
 const User = require('../database/models/User');
-const UserGenerator = require('../database/seeders/userSeeder');
+
+beforeEach(async () => {
+    // Clean the database
+    // await User.destroy({ where: {}, force: true });
+    // Listen for any sql request
+    await sequelize.ezTransaction.listen();
+})
+
+afterEach(async () => {
+    // Rollback the transaction
+    await sequelize.ezTransaction.rollback();
+})
+
+afterAll(async () => {
+    // Close the connexion
+    sequelize.close();
+});
 
 describe('User routes', () => {
-    afterAll(() => {
-        // Close the connexion
-        sequelize.close();
-    });
-
-    beforeEach(async () => {
-        // Truncate
-        await User.destroy({ where: {}, force: true });
-    });
-
     it('should get all users', async () => {
-        const users = await UserGenerator.generateUsers(1);
+        const users = await User.factory.addMany(1);
         const response = await request.get('/users').send();
 
         expect(response.status).toBe(200);
@@ -31,7 +37,7 @@ describe('User routes', () => {
     });
 
     it('should get one user', async () => {
-        const user = await UserGenerator.generateUser();
+        const user = await User.factory.addOne();
         const userData = user.dataValues;
 
         const response = await request.get('/users/' + userData.id).send();
@@ -46,8 +52,7 @@ describe('User routes', () => {
     });
 
     it('should not get any user', async () => {
-        const user = await UserGenerator.generateUser();
-        const userData = user.dataValues;
+        const user = await User.factory.addOne();
 
         const response = await request.get('/users/0').send();
 
@@ -69,7 +74,7 @@ describe('User routes', () => {
     });
 
     it('should update one user', async () => {
-        const user = await UserGenerator.generateUser('mail1@dev.com');
+        const user = await User.factory.addOne('mail1@dev.com');
         const response = await request.put('/users/' + user.dataValues.id)
             .send({
                 email: 'mail2@dev.com',
@@ -83,7 +88,7 @@ describe('User routes', () => {
     });
 
     it('should not find any user to update', async () => {
-        const user = await UserGenerator.generateUser('mail1@dev.com');
+        const user = await User.factory.addOne('mail1@dev.com');
         const response = await request.put('/users/0')
             .send({
                 email: 'mail2@dev.com',
@@ -96,7 +101,7 @@ describe('User routes', () => {
     });
 
     it('should delete one user', async () => {
-        const user = await UserGenerator.generateUser();
+        const user = await await User.factory.addOne();
         const response = await request.delete('/users/' + user.dataValues.id)
             .send();
 

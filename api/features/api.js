@@ -1,9 +1,8 @@
-const { Given, When, BeforeAll, Then, AfterAll } = require("@cucumber/cucumber");
+const { Given, When, Then, BeforeStep, AfterStep, AfterAll } = require("@cucumber/cucumber");
 const supertest = require('supertest');
 const app = require('../app');
 const sequelize = require('../database/connexion');
 const { expect } = require('expect');
-const UserGenerator = require('../database/seeders/userSeeder');
 const User = require('../database/models/User');
 const client = supertest(app);
 
@@ -30,6 +29,18 @@ const sanitizePath = function (path) {
     return "/" + path.replace(/^\/+/, "");
 };
 
+BeforeStep(async () => {
+    // Clean the database
+    // await User.destroy({ where: {}, force: true });
+    // Listen for any sql request
+    await sequelize.ezTransaction.listen();
+})
+
+AfterStep(async () => {
+    // Rollback the transaction
+    await sequelize.ezTransaction.rollback();
+})
+
 AfterAll(async () => {
     // Close the connexion
     await sequelize.close();
@@ -44,11 +55,11 @@ Given("I have no user", async function () {
 });
 
 Given("I create one user", async function () {
-    this.user = await UserGenerator.generateUser();
+    this.user = await User.factory.addOne();
 });
 
 Given("I create {int} users", async function (count) {
-    await UserGenerator.generateUsers(count);
+    await User.factory.addMany(count);
 });
 
 When("I send a {string} request to {string}", async function (method, path) {

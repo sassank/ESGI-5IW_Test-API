@@ -3,7 +3,20 @@ require('../init_database');
 const sequelize = require('../connexion');
 const User = require('../models/User');
 
-afterAll(() => {
+beforeEach(async () => {
+    // Clean the database
+    // await User.destroy({ where: {}, force: true });
+    // Listen for any sql request
+    await sequelize.ezTransaction.listen();
+})
+
+afterEach(async () => {
+    // Rollback the transaction
+    await sequelize.ezTransaction.rollback();
+})
+
+afterAll(async () => {
+    // Close the connexion
     sequelize.close();
 });
 
@@ -14,13 +27,9 @@ it('should create a new user', async () => {
         password: "password"
     });
 
-    try {
-        expect(myUser).toBeDefined();
-        expect(myUser).toBeInstanceOf(User);
-        expect(myUser.email).toBe("mail@dev.com");
-        expect(myUser.password).toBe("password");
-    } finally {
-        // Remove the user even if any error occurs
-        myUser.destroy();
-    }
+    expect(myUser).toBeDefined();
+    expect(myUser).toBeInstanceOf(User);
+    expect(myUser.email).toBe("mail@dev.com");
+    expect(myUser.password).toBe("password");
+
 });

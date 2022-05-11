@@ -1,12 +1,10 @@
-require('../init_database');
-
 const User = require('../models/User');
 
 defaultEmail = 'mi@mail.com';
 defaultPassword = 'password';
 
-const UserGenerator = {
-    generateUsers: async (count) => {
+User.factory = {
+    addMany: async (count = 5) => {
         let users = [];
         for (let i = 0; i < count; i++) {
             users.push(await User.create({
@@ -16,12 +14,10 @@ const UserGenerator = {
         }
         return users;
     },
-    generateUser: async (email = defaultEmail, password = defaultPassword) => {
+    addOne: async (email = defaultEmail, password = defaultPassword) => {
         return await User.create({
             email,
             password
         });
     }
 };
-
-module.exports = UserGenerator;
