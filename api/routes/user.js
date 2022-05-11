@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express();
-const User = require("../database//models/User");
+const User = require("../database/models/User");
 
 // Set RESTFUL api routes for sequilize model User
 router.get("/", (req, res) => {
