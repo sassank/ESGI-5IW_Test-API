@@ -5,9 +5,12 @@ const app = require('../app');
 const request = supertest(app);
 const User = require('../database/models/User');
 
-beforeEach(async () => {
+beforeAll(async () => {
     // Clean the database
-    // await User.destroy({ where: {}, force: true });
+    await User.destroy({ where: {}, force: true });
+})
+
+beforeEach(async () => {
     // Listen for any sql request
     await sequelize.ezTransaction.listen();
 })

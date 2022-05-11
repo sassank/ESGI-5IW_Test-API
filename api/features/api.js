@@ -50,16 +50,28 @@ Given("I have payload", function (dataTable) {
     this.payload = dataTable.rowsHash();
 });
 
-Given("I have no user", async function () {
-    await User.destroy({ where: {}, force: true });
+Given("I have no {string}", async function (entity) {
+    switch (entity) {
+        case "user":
+            await User.destroy({ where: {}, force: true });
+            break;
+    }
 });
 
-Given("I create one user", async function () {
-    this.user = await User.factory.addOne();
+Given("I create one {string}", async function (entity) {
+    switch (entity) {
+        case "user":
+            this.user = await User.factory.addOne();
+            break;
+    }
 });
 
-Given("I create {int} users", async function (count) {
-    await User.factory.addMany(count);
+Given("I create {int} {string}", async function (count, entity) {
+    switch (entity) {
+        case "users":
+            await User.factory.addMany(count);
+            break;
+    }
 });
 
 When("I send a {string} request to {string}", async function (method, path) {
