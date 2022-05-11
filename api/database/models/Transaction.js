@@ -3,13 +3,9 @@ const sequelize = require('../connexion');
 
 const Transaction = sequelize.define('Transaction', {
   // Model attributes are defined here
-  firstName: {
-    type: DataTypes.STRING,
+  price: {
+    type: DataTypes.INTEGER,
     allowNull: false
-  },
-  lastName: {
-    type: DataTypes.STRING
-    // allowNull defaults to true
   }
 }, {
   // Other model options go here
