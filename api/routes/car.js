@@ -5,10 +5,10 @@ const Car = require("../database/models/Car");
 // Set RESTFUL api routes for sequilize model Car
 router.get("/", (req, res) => {
     Car.findAll().then(Cars => {
-        res.json(Cars).status(200); // 200 = OK
+        res.status(200).json(Cars); // 200 = OK
     }
     ).catch(err => {
-        res.json(err).status(500); // 500 = Internal Server Error
+        res.status(500).json(err); // 500 = Internal Server Error
     }
     );
 });
@@ -60,10 +60,10 @@ router.delete("/:id", (req, res) => {
             id: req.params.id
         }
     }).then(Car => {
-        res.json(Car).status(204); // 204 = No content
+        res.status(204).json(Car); // 204 = No content
     }
     ).catch(err => {
-        res.json(err).status(500); // 500 = Internal Server Error
+        res.status(500).json(err); // 500 = Internal Server Error
     }
     );
 });

@@ -5,10 +5,10 @@ const Transaction = require("../database/models/Transaction");
 // Set RESTFUL api routes for sequilize model Transaction
 router.get("/", (req, res) => {
     Transaction.findAll().then(Transactions => {
-        res.json(Transactions).status(200); // 200 = OK
+        res.status(200).json(Transactions); // 200 = OK
     }
     ).catch(err => {
-        res.json(err).status(500); // 500 = Internal Server Error
+        res.status(500).json(err); // 500 = Internal Server Error
     }
     );
 });
@@ -60,10 +60,10 @@ router.delete("/:id", (req, res) => {
             id: req.params.id
         }
     }).then(Transaction => {
-        res.json(Transaction).status(204); // 204 = No content
+        res.status(204).json(Transaction); // 204 = No content
     }
     ).catch(err => {
-        res.json(err).status(500); // 500 = Internal Server Error
+        res.status(500).json(err); // 500 = Internal Server Error
     }
     );
 });
