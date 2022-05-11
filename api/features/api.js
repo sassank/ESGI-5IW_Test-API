@@ -29,17 +29,17 @@ const sanitizePath = function (path) {
     return "/" + path.replace(/^\/+/, "");
 };
 
-BeforeStep(async () => {
-    // Clean the database
-    // await User.destroy({ where: {}, force: true });
-    // Listen for any sql request
-    await sequelize.ezTransaction.listen();
-})
+// BeforeStep(async () => {
+//     // Clean the database
+//     // await User.destroy({ where: {}, force: true });
+//     // Listen for any sql request
+//     await sequelize.ezTransaction.listen();
+// })
 
-AfterStep(async () => {
-    // Rollback the transaction
-    await sequelize.ezTransaction.rollback();
-})
+// AfterStep(async () => {
+//     // Rollback the transaction
+//     await sequelize.ezTransaction.rollback();
+// })
 
 AfterAll(async () => {
     // Close the connexion
