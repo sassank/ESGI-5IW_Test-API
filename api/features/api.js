@@ -4,6 +4,8 @@ const app = require('../app');
 const sequelize = require('../database/connexion');
 const { expect } = require('expect');
 const User = require('../database/models/User');
+const Car = require('../database/models/Car');
+const Transaction = require('../database/models/Transaction');
 const client = supertest(app);
 
 /**
@@ -55,6 +57,12 @@ Given("I have no {string}", async function (entity) {
         case "user":
             await User.destroy({ where: {}, force: true });
             break;
+        case "car":
+            await Car.destroy({ where: {}, force: true });
+            break;
+        case "transaction":
+            await Transaction.destroy({ where: {}, force: true });
+            break;
     }
 });
 
@@ -63,6 +71,12 @@ Given("I create one {string}", async function (entity) {
         case "user":
             this.user = await User.factory.addOne();
             break;
+        case "car":
+            this.car = await Car.factory.addOne();
+            break;
+        case "transaction":
+            this.transaction = await Transaction.factory.addOne();
+            break;
     }
 });
 
@@ -70,6 +84,12 @@ Given("I create {int} {string}", async function (count, entity) {
     switch (entity) {
         case "users":
             await User.factory.addMany(count);
+            break;
+        case "cars":
+            await Car.factory.addMany(count);
+            break;
+        case "transactions":
+            await Transaction.factory.addMany(count);
             break;
     }
 });
@@ -83,14 +103,22 @@ When("I send a {string} request to {string}", async function (method, path) {
     this.response = await this.request.send();
 });
 
-When("I send a {string} request to {string} for the created user", async function (method, path) {
-    checkMethodIsValid(method);
-    path = sanitizePath(path);
+When("I send a {string} request to {string} for the created {string}",
+    async function (method, path, entity) {
+        checkMethodIsValid(method);
+        path = sanitizePath(path);
 
-    this.request = client[method.toLowerCase()](path + "/" + this.user.id)
-        .set('Content-Type', 'application/json');
-    this.response = await this.request.send();
-});
+        if (!["user", "car", "transaction"].includes(entity)) {
+            throw new Error("Entity \"" + entity + "\" not supported.");
+        }
+        if (this[entity] === undefined) {
+            throw new Error("The entity \"" + entity + "\" has no registered value.");
+        }
+        const entityId = this[entity].id;
+        this.request = client[method.toLowerCase()](path + "/" + entityId)
+            .set('Content-Type', 'application/json');
+        this.response = await this.request.send();
+    });
 
 When("I send a {string} request to {string} with payload", async function (method, path) {
     checkMethodIsValid(method);
@@ -101,14 +129,22 @@ When("I send a {string} request to {string} with payload", async function (metho
     this.response = await this.request.send(this.payload);
 });
 
-When("I send a {string} request to {string} with payload for the created user", async function (method, path) {
-    checkMethodIsValid(method);
-    path = sanitizePath(path);
+When("I send a {string} request to {string} with payload for the created {string}",
+    async function (method, path, entity) {
+        checkMethodIsValid(method);
+        path = sanitizePath(path);
 
-    this.request = client[method.toLowerCase()](path + "/" + this.user.id)
-        .set('Content-Type', 'application/json');
-    this.response = await this.request.send(this.payload);
-});
+        if (!["user", "car", "transaction"].includes(entity)) {
+            throw new Error("Entity \"" + entity + "\" not supported.");
+        }
+        if (this[entity] === undefined) {
+            throw new Error("The entity \"" + entity + "\" has no registered value.");
+        }
+        const entityId = this[entity].id;
+        this.request = client[method.toLowerCase()](path + "/" + entityId)
+            .set('Content-Type', 'application/json');
+        this.response = await this.request.send(this.payload);
+    });
 
 Then("I should receive a {int} response", function (status) {
     expect(this.response.status).toBe(status);
@@ -119,16 +155,17 @@ Then("I should receive an object", function () {
 });
 
 Then("I should receive an object with payload", function (dataTable) {
+    console.log(dataTable, dataTable.rowsHash());
     expect(this.response.body).toBeInstanceOf(Object);
-    // Check the keys
+    // Check the keys and result
     expect(this.response.body).toEqual(expect.objectContaining(dataTable.rowsHash()));
     // Check the results
-    for (const key in dataTable.rowsHash()) {
-        if (Object.hasOwnProperty.call(dataTable.rowsHash(), key)) {
-            const row = dataTable.rowsHash()[key];
-            expect(this.response.body[key]).toBe(row);
-        }
-    }
+    // for (const key in dataTable.rowsHash()) {
+    //     if (Object.hasOwnProperty.call(dataTable.rowsHash(), key)) {
+    //         const row = dataTable.rowsHash()[key];
+    //         expect(this.response.body[key]).toBe(row);
+    //     }
+    // }
 });
 
 Then("I should receive a list of items", function () {

@@ -16,7 +16,7 @@ Feature: Check the user
 
     Scenario: We check that we can get existant user
         Given I create one "user"
-        When I send a "GET" request to "users" for the created user
+        When I send a "GET" request to "users" for the created "user"
         Then I should receive a 200 response
         And I should receive an object
 
@@ -40,7 +40,7 @@ Feature: Check the user
         Given I have payload
             | email    | mail@dev.com |
             | password | password     |
-        When I send a "PUT" request to "users" with payload for the created user
+        When I send a "PUT" request to "users" with payload for the created "user"
         Then I should receive a 200 response
         And I should receive an object with payload
             | email | mail@dev.com |
@@ -48,5 +48,5 @@ Feature: Check the user
 
     Scenario: We check that we can get existant user
         Given I create one "user"
-        When I send a "DELETE" request to "users" for the created user
+        When I send a "DELETE" request to "users" for the created "user"
         Then I should receive a 204 response
